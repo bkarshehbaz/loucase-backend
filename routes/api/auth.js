@@ -12,8 +12,6 @@ const User = require("../../models/User");
 // @desc     Get user by token
 // @access   Private
 router.get("/", auth, async (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "X-Requested-With");
   try {
     const user = await User.findById(req.user.id).select("-password");
     res.json(user);
@@ -31,8 +29,6 @@ router.post(
   check("email", "Please include a valid email").isEmail(),
   check("password", "Password is required").exists(),
   async (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });

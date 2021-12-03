@@ -22,8 +22,6 @@ router.post(
   ).isLength({ min: 6 }),
   check("serialnumber", "Serial number is required").notEmpty(),
   async (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
