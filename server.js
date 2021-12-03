@@ -4,7 +4,10 @@ const connectDB = require("./config/db");
 const path = require("path");
 const bodyParser = require("body-parser");
 
+var cors = require("cors");
+
 const app = express();
+app.use(cors());
 
 // Connect Database
 
