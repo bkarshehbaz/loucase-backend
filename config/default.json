@@ -1,0 +1,5 @@
+{
+  "mongoURI": "mongodb+srv://bkar:nh2conh2cuso4@cluster0.d8sxr.mongodb.net/NFC",
+  "jwtSecret": "12345",
+  "githubToken": "asdfdsfads"
+}
