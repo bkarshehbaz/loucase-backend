@@ -23,9 +23,9 @@ const users = require("./routes/api/users");
 const auth = require("./routes/api/auth");
 const profile = require("./routes/api/profile");
 
-app.use("/api/users", users);
-app.use("/api/auth", auth);
-app.use("/api/profile", profile);
+// app.use("/api/users", users);
+// app.use("/api/auth", auth);
+// app.use("/api/profile", profile);
 // app.use("/api/posts", require("./routes/api/posts"));
 
 // // Serve static assets in production
