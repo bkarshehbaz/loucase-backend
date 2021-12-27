@@ -22,11 +22,11 @@ app.use(express.json());
 const users = require("./routes/api/users");
 const auth = require("./routes/api/auth");
 const profile = require("./routes/api/profile");
-
+const connections = require("./routes/api/connections");
 app.use("/api/users", users);
 app.use("/api/auth", auth);
 app.use("/api/profile", profile);
-// app.use("/api/posts", require("./routes/api/posts"));
+app.use("/api/connections", connections);
 
 // // Serve static assets in production
 // if (process.env.NODE_ENV === "production") {

@@ -3,7 +3,7 @@ const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const auth = require("../../middleware/auth");
 
-const Post = require("../../models/Post");
+const Connections = require("../../models/Connections");
 const User = require("../../models/User");
 const checkObjectId = require("../../middleware/checkObjectId");
 
@@ -11,9 +11,11 @@ const checkObjectId = require("../../middleware/checkObjectId");
 // @desc     Create a post
 // @access   Private
 router.post(
-  "/",
-  auth,
-  check("text", "Text is required").notEmpty(),
+  "/add",
+  check("name", "Name is required").notEmpty(),
+  check("email", "Email is required").notEmpty(),
+  check("phone", "Phone is required").notEmpty(),
+  check("serialnumber", "Serial number is required").notEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -21,18 +23,34 @@ router.post(
     }
 
     try {
-      const user = await User.findById(req.user.id).select("-password");
+      await User.findOne(
+        { serialnumber: req.body.serialnumber },
+        async function (err, mongoresponse) {
+          if (err) {
+            return res
+              .status(400)
+              .json({ errors: [{ msg: "User does't exist" }] });
+          } else {
+            // Serialnumber does exist in our database
+            // Using upsert option (creates new doc if no match is found):
+            let connection = await Connections.findOneAndUpdate(
+              { user: req.user.id },
+              { $set: profileFields },
+              { new: true, upsert: true, setDefaultsOnInsert: true }
+            );
+            return res.json(connection);
+            const Connection = await Connections.findOne({
+              serialnumber: req.body.serialnumber,
+            });
 
-      const newPost = new Post({
-        text: req.body.text,
-        name: user.name,
-        avatar: user.avatar,
-        user: req.user.id,
-      });
+            Connection.allconnections.unshift(req.body);
 
-      const post = await newPost.save();
+            await Connection.save();
 
-      res.json(post);
+            res.json(Connection);
+          }
+        }
+      );
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");

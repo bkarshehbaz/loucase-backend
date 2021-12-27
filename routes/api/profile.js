@@ -10,7 +10,6 @@ const checkObjectId = require("../../middleware/checkObjectId");
 
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
-const Post = require("../../models/Post");
 
 // @route    GET api/profile/me
 // @desc     Get current users profile
@@ -52,6 +51,7 @@ router.post(
   check("whatsapp", "Whatsapp is required").notEmpty(),
   check("behance", "Behance is required").notEmpty(),
   check("twitter", "Twitter is required").notEmpty(),
+  check("passcode", "Passcode is required").notEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -76,6 +76,7 @@ router.post(
       twitter,
       dp,
       serialnumber,
+      passcode,
     } = req.body;
 
     // build a profile
@@ -96,6 +97,7 @@ router.post(
       twitter,
       dp,
       serialnumber,
+      passcode,
     };
 
     // // Build socialFields object
