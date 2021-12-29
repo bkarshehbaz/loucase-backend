@@ -42,7 +42,7 @@ router.post(
             },
             { new: true, upsert: true, setDefaultsOnInsert: true }
           );
-          return res.json(Connection);
+          return res.json(Connection.allconnections);
         } catch (err) {
           console.error(err.message);
           return res.status(500).send("Server Error");
@@ -102,7 +102,7 @@ router.post(
 // @access   Private
 router.post("/all", auth, async (req, res) => {
   try {
-    let Connection = await Connections.find({
+    let Connection = await Connections.findOne({
       serialnumber: req.body.serialnumber,
     }).sort({ date: -1 });
     res.json(Connection.allconnections);
