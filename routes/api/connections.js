@@ -99,10 +99,12 @@ router.post(
 // @route    GET api/posts
 // @desc     Get all posts
 // @access   Private
-router.get("/all", async (req, res) => {
+router.get("/all", auth, async (req, res) => {
   try {
-    const posts = await Post.find().sort({ date: -1 });
-    res.json(posts);
+    let Connection = await Connections.find({
+      serialnumber: req.user.serialnumber,
+    }).sort({ date: -1 });
+    res.json(Connection);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
