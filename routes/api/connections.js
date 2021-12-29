@@ -105,7 +105,7 @@ router.post("/all", auth, async (req, res) => {
     let Connection = await Connections.find({
       serialnumber: req.body.serialnumber,
     }).sort({ date: -1 });
-    res.json(Connection);
+    res.json(Connection.allconnections);
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
