@@ -23,34 +23,72 @@ router.post(
     }
 
     try {
-      await User.findOne(
-        { serialnumber: req.body.serialnumber },
-        async function (err, mongoresponse) {
-          if (err) {
-            return res
-              .status(400)
-              .json({ errors: [{ msg: "User does't exist" }] });
-          } else {
-            // Serialnumber does exist in our database
-            // Using upsert option (creates new doc if no match is found):
-            let connection = await Connections.findOneAndUpdate(
-              { user: req.user.id },
-              { $set: profileFields },
-              { new: true, upsert: true, setDefaultsOnInsert: true }
-            );
-            return res.json(connection);
-            const Connection = await Connections.findOne({
-              serialnumber: req.body.serialnumber,
-            });
+      // Check if user is existed with this serial number or not
+      let user = await User.findOne({ serialnumber: req.body.serialnumber });
 
-            Connection.allconnections.unshift(req.body);
-
-            await Connection.save();
-
-            res.json(Connection);
-          }
+      if (user) {
+        try {
+          // Using upsert option (creates new doc if no match is found):
+          let Connection = await Connections.findOneAndUpdate(
+            { serialnumber: req.body.serialnumber },
+            {
+              $push: {
+                allconnections: {
+                  name: req.body.name,
+                  email: req.body.email,
+                  phone: req.body.phone,
+                },
+              },
+            },
+            { new: true, upsert: true, setDefaultsOnInsert: true }
+          );
+          return res.json(Connection);
+        } catch (err) {
+          console.error(err.message);
+          return res.status(500).send("Server Error");
         }
-      );
+      } else {
+        res.status(400).send("User does't Exist");
+      }
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
+
+// @route    POST api/posts
+// @desc     Create a post
+// @access   Private
+router.post(
+  "/delete",
+  check("id", "Connection id is missing").notEmpty(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
+    try {
+      // Check if user is existed with this serial number or not
+      // let user = await User.findOne({ serialnumber: req.body.serialnumber });
+
+      if (true) {
+        try {
+          // Using upsert option (creates new doc if no match is found):
+          let Connection = await Connections.findOneAndUpdate(
+            { serialnumber: req.body.serialnumber },
+            { $pull: { allconnections: { _id: req.body.id } } },
+            { new: true }
+          );
+          return res.json(Connection);
+        } catch (err) {
+          console.error(err.message);
+          return res.status(500).send("Server Error");
+        }
+      } else {
+        res.status(400).send("User does't Exist");
+      }
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server Error");
@@ -61,7 +99,7 @@ router.post(
 // @route    GET api/posts
 // @desc     Get all posts
 // @access   Private
-router.get("/", auth, async (req, res) => {
+router.get("/all", async (req, res) => {
   try {
     const posts = await Post.find().sort({ date: -1 });
     res.json(posts);
