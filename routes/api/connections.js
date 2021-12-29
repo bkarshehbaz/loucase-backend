@@ -62,6 +62,7 @@ router.post(
 // @access   Private
 router.post(
   "/delete",
+  auth,
   check("id", "Connection id is missing").notEmpty(),
   async (req, res) => {
     const errors = validationResult(req);
