@@ -82,7 +82,7 @@ router.post(
             { $pull: { allconnections: { _id: req.body.id } } },
             { new: true }
           );
-          return res.json(Connection);
+          return res.json(Connection.allconnections);
         } catch (err) {
           console.error(err.message);
           return res.status(500).send("Server Error");
