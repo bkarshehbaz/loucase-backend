@@ -61,7 +61,7 @@ router.get(
 
         // Now send newly created password to user
         var transporter = await nodemailer.createTransport({
-          service: "gmail",
+          service: "Gmail",
           auth: {
             user: "bkarshehbaz@gmail.com",
             pass: "jagmagjagmagtaraay",
@@ -69,18 +69,18 @@ router.get(
         });
         var mailOptions = {
           from: "bkarshehbaz@gmail.com",
-          to: "bkarshehbaz@gmail.com",
+          to: "egmwxzzcjikfwwhvmo@kvhrr.com",
           subject: "Sending Email using Node.js",
           text: "That was easy!",
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
-            console.log(error);
+            console.log("This is error", error);
           } else {
             console.log("Email sent: " + info.response);
+            return res.json(UpdatedUser);
           }
         });
-        return res.json(UpdatedUser);
       }
     } catch (err) {
       console.error(err.message);
