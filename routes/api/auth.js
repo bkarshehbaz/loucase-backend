@@ -7,6 +7,21 @@ const config = require("config");
 const { check, validationResult } = require("express-validator");
 var generator = require("generate-password");
 
+const nodemailer = require("nodemailer");
+var transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "bkarshehbaz@gmail.com",
+    pass: "jagmagjagmagtaraay",
+  },
+});
+var mailOptions = {
+  from: "bkarshehbaz@gmail.com",
+  to: "bkarshehbaz@gmail.com",
+  subject: "Sending Email using Node.js",
+  text: "That was easy!",
+};
+
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
 
@@ -56,6 +71,15 @@ router.get(
           { email: req.body.email },
           { password: password }
         );
+
+        // Now send newly created password to user
+        transporter.sendMail(mailOptions, function (error, info) {
+          if (error) {
+            console.log(error);
+          } else {
+            console.log("Email sent: " + info.response);
+          }
+        });
         return res.json(UpdatedUser);
       }
     } catch (err) {
