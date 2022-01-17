@@ -52,12 +52,11 @@ router.get(
         password = await bcrypt.hash(password, salt);
         // store that password in that user's database
 
-        let profile = await Profile.findOneAndUpdate(
+        let UpdatedUser = await User.findOneAndUpdate(
           { email: req.body.email },
-          { password: password },
-          { new: true, upsert: true, setDefaultsOnInsert: true }
+          { password: password }
         );
-        return res.json(profile);
+        return res.json(UpdatedUser);
       }
     } catch (err) {
       console.error(err.message);
