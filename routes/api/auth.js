@@ -5,7 +5,9 @@ const auth = require("../../middleware/auth");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const { check, validationResult } = require("express-validator");
+var generator = require("generate-password");
 
+const Profile = require("../../models/Profile");
 const User = require("../../models/User");
 
 // @route    GET api/auth
@@ -20,6 +22,49 @@ router.get("/", auth, async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
+
+// @route    GET api/auth
+// @desc     Re-Send User Password
+// @access   Public
+router.get(
+  "/resendpassword",
+  check("email", "Please enter email address").exists(),
+  check("email", "Please include a valid email").isEmail(),
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    try {
+      let user = await User.findOne({ email: req.body.email });
+
+      if (!user) {
+        return res.status(400).json({ errors: [{ msg: "User does't exist" }] });
+      } else {
+        //  create new password
+        var password = await generator.generate({
+          length: 10,
+          numbers: true,
+        });
+        console.log("new password is ", password);
+        const salt = await bcrypt.genSalt(10);
+
+        password = await bcrypt.hash(password, salt);
+        // store that password in that user's database
+
+        let profile = await Profile.findOneAndUpdate(
+          { email: req.body.email },
+          { password: password },
+          { new: true, upsert: true, setDefaultsOnInsert: true }
+        );
+        return res.json(profile);
+      }
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
+  }
+);
 
 // @route    POST api/auth
 // @desc     Authenticate user & get token
