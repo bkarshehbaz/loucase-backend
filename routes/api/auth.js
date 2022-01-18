@@ -49,6 +49,7 @@ router.get(
           numbers: true,
         });
         console.log("new password is ", password);
+        let textpassword = password;
         const salt = await bcrypt.genSalt(10);
 
         password = await bcrypt.hash(password, salt);
@@ -70,8 +71,8 @@ router.get(
         var mailOptions = {
           from: "bkarshehbaz@gmail.com",
           to: user.email,
-          subject: "Sending Email using Node.js",
-          text: "This is your new password" + password,
+          subject: "Your Loucase Profile Password has been changed ",
+          text: "This is your new password: " + textpassword,
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
