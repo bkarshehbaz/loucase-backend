@@ -28,12 +28,13 @@ router.get("/", auth, async (req, res) => {
 // @route    GET api/auth
 // @desc     Re-Send User Password
 // @access   Public
-router.get(
+router.post(
   "/resendpassword",
-  check("email", "Please enter email address").exists(),
-  check("email", "Please include a valid email").isEmail(),
+
+  check("email", "Please include a valid email").notEmpty(),
   async (req, res) => {
     console.log("got hit");
+    console.log("data", req.body);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
