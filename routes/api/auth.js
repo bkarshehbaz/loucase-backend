@@ -68,10 +68,10 @@ router.get(
           },
         });
         var mailOptions = {
-          from: "bkarshehbaz@gmail.com>",
-          to: "egmwxzzcjikfwwhvmo@kvhrr.com",
+          from: "bkarshehbaz@gmail.com",
+          to: user.email,
           subject: "Sending Email using Node.js",
-          text: "That was easy!",
+          text: "This is your new password" + password,
         };
         transporter.sendMail(mailOptions, function (error, info) {
           if (error) {
