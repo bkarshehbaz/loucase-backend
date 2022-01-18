@@ -33,6 +33,7 @@ router.get(
   check("email", "Please enter email address").exists(),
   check("email", "Please include a valid email").isEmail(),
   async (req, res) => {
+    console.log("got hit");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
